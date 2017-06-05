@@ -11,13 +11,36 @@ struct node
 };
 void _seg(struct node **head,struct node **last,struct node **newHead,struct node *cur)
 {
+	if(cur==NULL)
+		return;
+	if(cur->next==NULL)
+	{
+		*last=cur;
+		//*newHead=cur;
+		//return;
+	}
+	_seg(head,last,newHead,cur->next);
+	if( (*head)->data%2==1)
+	{
+	 	if(*newHead == *head )
+	 	    *newHead =(*head)->next;
+		(*last)->next=*head;
+		(*head)->next=NULL;
+		*last=*head;
+		*head=(*newHead);
+		
+	}
+	else
+	{
+		*head=(*head)->next;
+	}
 	
 }
-struct node seg(struct node *head)
+struct node* seg(struct node *head)
 {
-	struct node *last=NULL,*newHead=NULL,cur=NULL;
-    WrapSeg(&head,&last,&newHead,head);
-    return newHead->next;
+	struct node *last=NULL,*newHead=head,*cur=NULL;
+    _seg(&head,&last,&newHead,head);
+    return newHead;
 }
 
 
@@ -32,6 +55,22 @@ void printList(struct node *node)
         node = node->next;
     }
 }
+void push(struct node** head_ref, int new_data)
+{
+    /* allocate node */
+    struct node* new_node =
+        (struct node*) malloc(sizeof(struct node));
+ 
+    /* put in the data  */
+    new_node->data  = new_data;
+ 
+    /* link the old list off the new node */
+    new_node->next = (*head_ref);
+ 
+    /* move the head to point to the new node */
+    (*head_ref)    = new_node;
+}
+
  
 /* Drier program to test above functions*/
 int main()
@@ -53,7 +92,7 @@ int main()
     printf("\nOriginal Linked list \n");
     printList(head);
  
-    head=seg(&head);
+    head=seg(head);
  
     printf("\nModified Linked list \n");
     printList(head);
